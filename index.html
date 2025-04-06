@@ -87,6 +87,9 @@
 
     document.getElementById('balance').addEventListener('input', calculateBudget);
     document.getElementById('savingsGoal').addEventListener('input', calculateBudget);
+
+    // Initial calculation on page load
+    window.addEventListener('DOMContentLoaded', calculateBudget);
   </script>
 </body>
 </html>
