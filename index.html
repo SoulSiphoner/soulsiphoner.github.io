@@ -1,95 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fortnightly Budget Planner</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f9f9f9;
-    }
-    h1 {
-      text-align: center;
-    }
-    .card {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .result p {
-      margin: 5px 0;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>Fortnightly Budget Planner</h1>
-  <div class="card">
-    <label for="balance">Current Bank Balance ($)</label>
-    <input type="number" id="balance" value="600">
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">Fortnightly planning</p>
+      <h1>Keep your spending on track</h1>
+      <p class="lede">
+        Enter your current balance, how much you want to save each fortnight, and your next payday to see
+        how much you can spend per day without missing your goal.
+      </p>
+    </header>
 
-    <label for="savingsGoal">Savings Goal This Fortnight ($)</label>
-    <input type="number" id="savingsGoal" value="0">
-  </div>
+    <section class="card form-card">
+      <div class="field">
+        <label for="balance">Current bank balance</label>
+        <div class="field-row">
+          <span class="prefix">$</span>
+          <input type="number" id="balance" name="balance" min="0" step="0.01" placeholder="0.00" aria-describedby="balance-help" />
+        </div>
+        <small id="balance-help" class="hint">Include only the funds you want available for this fortnight.</small>
+      </div>
 
-  <div class="card result" id="result" style="display: none;">
-    <p id="daysUntilPay"></p>
-    <p id="spendPerDay"></p>
-  </div>
+      <div class="field">
+        <label for="savings">Savings goal for this fortnight</label>
+        <div class="field-row">
+          <span class="prefix">$</span>
+          <input type="number" id="savings" name="savings" min="0" step="0.01" placeholder="0.00" aria-describedby="savings-help" />
+        </div>
+        <small id="savings-help" class="hint">This amount will be set aside before calculating daily spending.</small>
+      </div>
 
-  <script>
-    function calculateBudget() {
-      const balance = parseFloat(document.getElementById('balance').value);
-      const savingsGoal = parseFloat(document.getElementById('savingsGoal').value);
-      const resultDiv = document.getElementById('result');
-      const daysUntilPayP = document.getElementById('daysUntilPay');
-      const spendPerDayP = document.getElementById('spendPerDay');
+      <div class="field">
+        <label for="payday">Next payday</label>
+        <input type="date" id="payday" name="payday" aria-describedby="payday-help" />
+        <small id="payday-help" class="hint">If the date has already passed, we'll roll it forward in fortnightly steps.</small>
+      </div>
+    </section>
 
-      if (isNaN(balance) || isNaN(savingsGoal)) {
-        resultDiv.style.display = 'none';
-        return;
-      }
+    <section class="card results" aria-live="polite">
+      <div class="metrics">
+        <div class="metric">
+          <p class="metric-label">Days until payday</p>
+          <p class="metric-value" id="days-until">--</p>
+        </div>
+        <div class="metric">
+          <p class="metric-label">Spendable per day</p>
+          <p class="metric-value" id="daily-spend">--</p>
+        </div>
+      </div>
+      <p class="summary" id="summary">Enter your details to see your plan.</p>
+    </section>
+  </main>
 
-      const today = new Date();
-      let nextPay = new Date("2025-04-07");
-
-      while (nextPay < today) {
-        nextPay.setDate(nextPay.getDate() + 14);
-      }
-
-      const msInDay = 24 * 60 * 60 * 1000;
-      const daysUntilNextPay = Math.ceil((nextPay - today) / msInDay);
-
-      const spendable = balance - savingsGoal;
-      const dailySpend = spendable / daysUntilNextPay;
-
-      daysUntilPayP.textContent = `Days until next payday: ${daysUntilNextPay}`;
-      spendPerDayP.textContent = `Spendable per day: $${dailySpend.toFixed(2)}`;
-      resultDiv.style.display = 'block';
-    }
-
-    document.getElementById('balance').addEventListener('input', calculateBudget);
-    document.getElementById('savingsGoal').addEventListener('input', calculateBudget);
-
-    // Initial calculation on page load
-    window.addEventListener('DOMContentLoaded', calculateBudget);
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
